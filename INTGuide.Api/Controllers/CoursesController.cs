@@ -25,6 +25,13 @@ public class CoursesController : ControllerBase
                 Title = "ASP.NET Core",
                 Description = "Learn how to build APIs with ASP.Net Core",
                 Level = "Intermediate"
+            },
+            new Course
+            {
+                Id = 3,
+                Title = "wdv",
+                Description = "wdav",
+                Level = "Expert"
             }
         };
         return Ok(courses);
