@@ -1,5 +1,7 @@
+using INTGuide.Api.Data;
 using INTGuide.Api.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace INTGuide.Api.Controllers;
 
@@ -7,33 +9,66 @@ namespace INTGuide.Api.Controllers;
 [Route("api/[controller]")]
 public class CoursesController : ControllerBase
 {
-    [HttpGet]
-    public IActionResult GetCourses()
+    private readonly AppDbContext _db;
+
+    public CoursesController(AppDbContext db)
     {
-        var courses = new List<Course>
+        _db = db;
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<List<Course>>> GetCourses()
+    {
+        return await _db.Courses.ToListAsync();
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Course>> GetCourse(int id)
+    {
+        var course = await _db.Courses.FindAsync(id);
+        if (course is null)
         {
-            new Course
-            {
-                Id = 1,
-                Title = "C# Fundementals",
-                Description = "Learn the fundementals of C#",
-                Level = "Beginner"
-            },
-            new Course 
-            {
-                Id = 2,
-                Title = "ASP.NET Core",
-                Description = "Learn how to build APIs with ASP.Net Core",
-                Level = "Intermediate"
-            },
-            new Course
-            {
-                Id = 3,
-                Title = "wdv",
-                Description = "wdav",
-                Level = "Expert"
-            }
-        };
-        return Ok(courses);
+            return NotFound();
+        }
+        return course;
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<Course>> CreateCourse(Course course)
+    {
+        _db.Courses.Add(course);
+        await _db.SaveChangesAsync();
+        return CreatedAtAction(nameof(GetCourse), new { id = course.Id }, course);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateCourse(int id, Course updated)
+    {
+        var course = await _db.Courses.FindAsync(id);
+        if (course is null)
+        {
+            return NotFound();
+        }
+
+        course.Title = updated.Title;
+        course.Description = updated.Description;
+        course.Level = updated.Level;
+
+        await _db.SaveChangesAsync();
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteCourse(int id)
+    {
+        var course = await _db.Courses.FindAsync(id);
+        if (course is null)
+        {
+            return NotFound();
+        }
+
+        _db.Courses.Remove(course);
+        await _db.SaveChangesAsync();
+        return NoContent();
     }
 }

@@ -1,6 +1,37 @@
 @INTGuide.Api_HostAddress = http://localhost:5038
 
-GET {{INTGuide.Api_HostAddress}}/weatherforecast/
+GET {{INTGuide.Api_HostAddress}}/api/courses
 Accept: application/json
+
+###
+
+GET {{INTGuide.Api_HostAddress}}/api/courses/1
+Accept: application/json
+
+###
+
+POST {{INTGuide.Api_HostAddress}}/api/courses
+Content-Type: application/json
+
+{
+  "title": "C# Fundamentals",
+  "description": "Learn the fundamentals of C#",
+  "level": "Beginner"
+}
+
+###
+
+PUT {{INTGuide.Api_HostAddress}}/api/courses/1
+Content-Type: application/json
+
+{
+  "title": "C# Fundamentals",
+  "description": "Learn the basics of C#",
+  "level": "Beginner"
+}
+
+###
+
+DELETE {{INTGuide.Api_HostAddress}}/api/courses/1
 
 ###
